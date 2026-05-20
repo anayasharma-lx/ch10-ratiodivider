@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>My Day — Ganita Prakash Grade 8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#ffffff;--surface2:#f0ede8;
+  --border:#d8d4cc;--text:#1a1814;--text2:#5a5650;--text3:#9a958e;
+  --font:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono',ui-monospace,monospace;
+  --c0:#2c5f9e;--c1:#c0392b;--c2:#1a7a4a;--c3:#e08020;--c4:#7c3aed;--c5:#0891b2;--c6:#6b7280;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+.page{max-width:880px;margin:0 auto;padding:32px 24px}
+.label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.title{font-size:22px;font-weight:700;margin-bottom:6px}
+.subtitle{font-size:14px;color:var(--text2);margin-bottom:24px;max-width:580px;line-height:1.55}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:16px}
+
+/* Sliders */
+.activity-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.activity-row{display:grid;grid-template-columns:28px 140px 1fr 60px 50px;gap:10px;align-items:center}
+.act-swatch{width:22px;height:22px;border-radius:5px;flex-shrink:0}
+.act-name{font-size:13.5px;font-weight:600;color:var(--text)}
+.act-slider{width:100%;height:6px;border-radius:3px;cursor:pointer;-webkit-appearance:none;appearance:none;outline:none}
+.act-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.act-val{font-family:var(--mono);font-size:14px;font-weight:700;text-align:right}
+.act-unit{font-size:12px;color:var(--text3)}
+
+/* Total indicator */
+.total-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:2px solid var(--border);margin-top:4px}
+.total-label{font-size:13px;font-weight:600;color:var(--text2)}
+.total-val{font-family:var(--mono);font-size:18px;font-weight:700}
+.total-val.ok{color:#1a7a4a}
+.total-val.over{color:#c0392b}
+.total-val.under{color:#e08020}
+
+/* Visual bar */
+.bar-wrap{margin-bottom:20px}
+.bar-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between}
+.day-bar{display:flex;height:52px;border-radius:10px;overflow:hidden;width:100%;border:2px solid var(--border)}
+.day-seg{transition:flex .3s ease;display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;position:relative}
+.day-seg span{font-size:10px;font-weight:700;color:rgba(255,255,255,.9);white-space:nowrap;font-family:var(--mono);pointer-events:none}
+
+/* Pie chart */
+.viz-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:560px){.viz-layout{grid-template-columns:1fr}}
+.viz-panel{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px}
+.viz-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:12px}
+canvas{display:block;margin:0 auto}
+
+/* Legend */
+.legend{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.leg-row{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.leg-pct{font-family:var(--mono);font-size:11px;color:var(--text3);margin-left:auto}
+
+/* Ratio display */
+.ratio-box{background:#fff8f0;border:1.5px solid #f0d8c0;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#6b4400;line-height:1.7}
+.ratio-box strong{color:#a05000}
+.ratio-box .eq{font-family:var(--mono);font-size:13px;display:block;margin:3px 0}
+
+/* Compare banner */
+.compare-banner{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:16px}
+.compare-banner strong{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label">Chapter 3 · Proportional Reasoning – 2</div>
+  <div class="title">My Day — Dividing 24 Hours</div>
+  <div class="subtitle">A day has exactly 24 hours. Drag the sliders to set how many hours you spend on each activity. The ratio of those hours, and the pie chart, update live — showing how we naturally divide a whole in a ratio.</div>
+
+  <div class="card">
+    <div class="card-title">Set your typical day (drag sliders)</div>
+    <div class="activity-list" id="actList"></div>
+    <div class="total-row">
+      <span class="total-label">Total hours used</span>
+      <span class="total-val" id="totalVal">0 / 24 hrs</span>
+    </div>
+  </div>
+
+  <div class="viz-layout">
+    <div class="viz-panel">
+      <div class="viz-title">How your day looks</div>
+      <canvas id="pieCvs" width="200" height="200"></canvas>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="viz-panel">
+      <div class="viz-title">Timeline strip (24 hours)</div>
+      <div class="day-bar" id="dayBar"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono)">12am &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12am</div>
+      <div class="ratio-box" id="ratioBox" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <div class="compare-banner" id="compareBanner"></div>
+</div>
+
+<script>
+const ACTIVITIES = [
+  {name:'Sleep',            color:'#2c5f9e', default:8,  max:12, unit:'hrs'},
+  {name:'School / study',   color:'#c0392b', default:6,  max:12, unit:'hrs'},
+  {name:'Play / hobbies',   color:'#1a7a4a', default:2,  max:8,  unit:'hrs'},
+  {name:'Eating / meals',   color:'#e08020', default:1,  max:4,  unit:'hrs'},
+  {name:'Travel',           color:'#7c3aed', default:1,  max:6,  unit:'hrs'},
+  {name:'Personal care',    color:'#0891b2', default:1,  max:4,  unit:'hrs'},
+  {name:'Screen / media',   color:'#6b7280', default:2,  max:8,  unit:'hrs'},
+];
+
+const MANOJ_DAY = [9, 7, 1.5, 0.5, 1, 0.5, 0]; // approx from textbook strip
+
+let hours = ACTIVITIES.map(a => a.default);
+
+function gcd(a, b) { return b < 0.001 ? a : gcd(b, a % b); }
+function arrGcd(arr) { return arr.filter(x=>x>0).reduce((g, v) => gcd(g, v)); }
+function fmtH(h) { return h % 1 === 0 ? h + 'h' : (Math.round(h*2)/2) + 'h'; }
+
+// Build sliders
+const actList = document.getElementById('actList');
+ACTIVITIES.forEach((act, i) => {
+  const row = document.createElement('div');
+  row.className = 'activity-row';
+
+  const swatch = document.createElement('div');
+  swatch.className = 'act-swatch';
+  swatch.style.background = act.color;
+
+  const name = document.createElement('div');
+  name.className = 'act-name';
+  name.textContent = act.name;
+
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.className = 'act-slider';
+  slider.min = 0; slider.max = act.max; slider.step = 0.5;
+  slider.value = hours[i];
+  slider.style.accentColor = act.color;
+  slider.style.setProperty('--thumb-color', act.color);
+  slider.oninput = () => { hours[i] = parseFloat(slider.value); valSpan.textContent = fmtH(hours[i]); update(); };
+
+  const valSpan = document.createElement('span');
+  valSpan.className = 'act-val';
+  valSpan.style.color = act.color;
+  valSpan.textContent = fmtH(hours[i]);
+
+  const unit = document.createElement('span');
+  unit.className = 'act-unit';
+  unit.textContent = 'hrs';
+
+  row.appendChild(swatch);
+  row.appendChild(name);
+  row.appendChild(slider);
+  row.appendChild(valSpan);
+  row.appendChild(unit);
+  actList.appendChild(row);
+});
+
+function update() {
+  const total = hours.reduce((s, h) => s + h, 0);
+  const tv = document.getElementById('totalVal');
+  tv.textContent = fmtH(total) + ' / 24 hrs';
+  tv.className = 'total-val ' + (Math.abs(total - 24) < 0.01 ? 'ok' : total > 24 ? 'over' : 'under');
+
+  drawPie(total);
+  drawBar(total);
+  drawRatio(total);
+  drawCompare();
+}
+
+function drawPie(total) {
+  const cvs = document.getElementById('pieCvs');
+  const ctx = cvs.getContext('2d');
+  ctx.clearRect(0, 0, 200, 200);
+  ctx.fillStyle = '#f0ede8'; ctx.fillRect(0, 0, 200, 200);
+
+  if (total <= 0) return;
+  const cx = 100, cy = 100, R = 88;
+  let angle = -Math.PI / 2;
+  hours.forEach((h, i) => {
+    if (h <= 0) return;
+    const slice = (h / Math.min(total, 24)) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = ACTIVITIES[i].color + 'cc'; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Angle label
+    const mid = angle + slice / 2;
+    const lx = cx + Math.cos(mid) * R * 0.65, ly = cy + Math.sin(mid) * R * 0.65;
+    if (slice > 0.18) {
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px DM Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText(fmtH(h), lx, ly + 4);
+    }
+    angle += slice;
+  });
+
+  // Unaccounted
+  if (total < 24) {
+    const rem = 24 - total;
+    const slice = (rem / 24) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = '#e8e4de'; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  // Legend
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  hours.forEach((h, i) => {
+    if (h <= 0) return;
+    const pct = (h / Math.min(total, 24) * 100).toFixed(0);
+    const d = document.createElement('div');
+    d.className = 'leg-row';
+    d.innerHTML = `<div class="leg-dot" style="background:${ACTIVITIES[i].color}"></div>
+      <span>${ACTIVITIES[i].name}</span>
+      <span class="leg-pct">${pct}%</span>`;
+    legend.appendChild(d);
+  });
+  if (total < 24) {
+    const d = document.createElement('div');
+    d.className = 'leg-row';
+    d.innerHTML = `<div class="leg-dot" style="background:#e8e4de;border:1px solid #ccc"></div><span style="color:var(--text3)">Unaccounted</span><span class="leg-pct">${((24-total)/24*100).toFixed(0)}%</span>`;
+    legend.appendChild(d);
+  }
+}
+
+function drawBar(total) {
+  const bar = document.getElementById('dayBar');
+  bar.innerHTML = '';
+  const used = Math.min(total, 24);
+  hours.forEach((h, i) => {
+    if (h <= 0) return;
+    const pct = (h / 24) * 100;
+    const seg = document.createElement('div');
+    seg.className = 'day-seg';
+    seg.style.flex = h;
+    seg.style.background = ACTIVITIES[i].color + 'cc';
+    seg.title = `${ACTIVITIES[i].name}: ${fmtH(h)}`;
+    if (pct > 6) {
+      const sp = document.createElement('span');
+      sp.textContent = fmtH(h);
+      seg.appendChild(sp);
+    }
+    bar.appendChild(seg);
+  });
+  if (total < 24) {
+    const rem = 24 - total;
+    const seg = document.createElement('div');
+    seg.className = 'day-seg';
+    seg.style.flex = rem;
+    seg.style.background = '#e8e4de';
+    bar.appendChild(seg);
+  }
+}
+
+function drawRatio(total) {
+  const active = hours.map((h, i) => ({h, name:ACTIVITIES[i].name})).filter(a=>a.h>0);
+  if (!active.length) { document.getElementById('ratioBox').innerHTML='Set some hours above.'; return; }
+  const doubles = active.map(a => a.h * 2); // multiply by 2 to avoid halves
+  const g = doubles.reduce((a,b) => gcd(a,b));
+  const simplified = doubles.map(v => Math.round(v/g));
+  const ratioStr = simplified.join(' : ');
+  const partStr = active.map((a,i) => `${simplified[i]} parts = ${a.h}h`).join(', ');
+  document.getElementById('ratioBox').innerHTML =
+    `<strong>Your ratio:</strong> ${active.map(a=>a.name).join(' : ')}<br>
+    <span class="eq">= ${active.map(a=>fmtH(a.h)).join(' : ')} = ${ratioStr}</span>
+    When we divide 24 hours in this ratio, each "part" = 24 ÷ ${simplified.reduce((s,v)=>s+v,0)} = ${(24/simplified.reduce((s,v)=>s+v,0)).toFixed(2)}h.`;
+}
+
+function drawCompare() {
+  const total = hours.reduce((s,h)=>s+h,0);
+  if (total < 1) { document.getElementById('compareBanner').innerHTML=''; return; }
+  const myPcts = ACTIVITIES.map((a,i) => total > 0 ? (hours[i]/total*100).toFixed(0) : 0);
+  const top = ACTIVITIES.map((a,i)=>({name:a.name,h:hours[i]})).sort((a,b)=>b.h-a.h);
+  document.getElementById('compareBanner').innerHTML =
+    `<strong>What does this tell you?</strong> You spend the most time on <strong>${top[0].name}</strong> (${fmtH(top[0].h)}) and the least on <strong>${top[top.length-1].name}</strong> (${fmtH(top[top.length-1].h)}). A day has a fixed total of 24 hours — every ratio of activities must add up to exactly 24. This is exactly what "dividing a whole in a ratio" means in mathematics.
+    ${total > 24 ? '<br><strong style="color:#c0392b">You have exceeded 24 hours — reduce some activities.</strong>' : total < 22 ? `<br>You have ${fmtH(24-total)} unaccounted — where does that time go?` : ''}`;
+}
+
+update();
+</script>
+</body>
+</html>
